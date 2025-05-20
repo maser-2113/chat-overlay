@@ -9,7 +9,7 @@
       background-color: rgba(0, 0, 0, 0);
       font-family: 'Segoe UI', sans-serif;
       font-size: 16px;
-      color: #00ffea;
+      color: #00ffe1;
       overflow: hidden;
     }
 
@@ -22,7 +22,7 @@
     }
 
     .message {
-      background: rgba(30, 30, 30, 0.8);
+      background: rgba(0, 0, 0, 0.5);
       margin: 4px 0;
       padding: 6px 10px;
       border-radius: 10px;
@@ -42,29 +42,34 @@
 </head>
 <body>
   <div id="chat"></div>
+
+  <!-- TMI.js через надёжный CDN -->
   <script src="https://unpkg.com/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <script>
-    const CHANNEL_NAME = 'maser_2113'.toLowerCase(); // 👈 замени на свой
+    // Дожидаемся полной загрузки библиотеки
+    window.addEventListener('load', () => {
+      const CHANNEL_NAME = 'maser_2113'; // 👈 Замени на свой ник
 
-    const chat = document.getElementById('chat');
+      const chat = document.getElementById('chat');
 
-    const client = new tmi.Client({
-      connection: { reconnect: true },
-      channels: [CHANNEL_NAME]
-    });
+      const client = new tmi.Client({
+        connection: { reconnect: true },
+        channels: [CHANNEL_NAME]
+      });
 
-    client.connect();
+      client.connect();
 
-    client.on('message', (channel, tags, message, self) => {
-      const div = document.createElement('div');
-      div.className = 'message';
-      div.innerHTML = `<span class="user">${tags['display-name']}:</span> ${message}`;
-      chat.appendChild(div);
+      client.on('message', (channel, tags, message, self) => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.innerHTML = `<span class="user">${tags['display-name']}:</span> ${message}`;
+        chat.appendChild(div);
 
-      // Ограничим количество сообщений
-      if (chat.children.length > 15) {
-        chat.removeChild(chat.firstChild);
-      }
+        // Максимум 20 сообщений
+        if (chat.children.length > 20) {
+          chat.removeChild(chat.firstChild);
+        }
+      });
     });
   </script>
 </body>
